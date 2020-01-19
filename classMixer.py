@@ -9,10 +9,12 @@ def makeTrueY(inY, rect=128):
 
 class Mixer:
     def __init__(self, disp, width = 128, height = 64):
+    
         self.disp = disp
         
         self.timeSleep = 1.
-        
+        self.defaultAmpl = 0.73    
+    
         self.buffer = 20
         self.bar = 12
         self.gap = 4
@@ -20,12 +22,12 @@ class Mixer:
 
         self.dictVUs = {}
         
-        self.V1 = .73
-        self.V2 = .73
-        self.V3 = .73
-        self.V4 = .73
-        self.V5 = .73
-        self.V6 = .73
+        self.V1 = self.defaultAmpl
+        self.V2 = self.defaultAmpl
+        self.V3 = self.defaultAmpl
+        self.V4 = self.defaultAmpl
+        self.V5 = self.defaultAmpl
+        self.V6 = self.defaultAmpl
         
         self.ymax = 64
         self.ymin = 0
@@ -33,18 +35,18 @@ class Mixer:
         self.ymx = 0
         self.yb = 5
         self.yrng = self.ymax - self.yhead - self.yb
-        
+        # init barh
         self.barh1 = int(self.yrng * self.V1)
         self.barh2 = int(self.yrng * self.V2)
         self.barh3 = int(self.yrng * self.V3)
         self.barh4 = int(self.yrng * self.V4)
         self.barh5 = int(self.yrng * self.V5)
         self.barh6 = int(self.yrng * self.V6)
-        
+        #
         buffer = self.buffer
         bar = self.bar
         gap = self.gap
-
+        #
         self.x_ = 0    
         self.x0 = self.x_ + buffer        #
         self.x1 = self.x0+bar   #1
@@ -65,6 +67,23 @@ class Mixer:
         self._update_rects()
         self._write_levels()
         time.sleep(self.timeSleep)
+    
+    def clearScreen(self):
+        self._write_clear()
+        
+    def setVolumeVector(self,V1=.73,
+                            V2=.73,
+                            V3=.73,
+                            V4=.73,
+                            V5=.73,
+                            V6=.73):
+        self.V1 = V1
+        self.V2 = V2
+        self.V3 = V3
+        self.V4 = V4
+        self.V5 = V5
+        self.V6 = V6
+        
     
     
     def _update_barh(self):
@@ -108,5 +127,7 @@ class Mixer:
         self.disp.fill(0)
         self.disp.show()
         #self.disp.
+    
+    
         
 
