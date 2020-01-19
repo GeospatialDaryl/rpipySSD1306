@@ -1,3 +1,5 @@
+import time
+
 def makeTrueY(inY, rect=128):
     if inY > 128:
         return None
@@ -9,10 +11,14 @@ class Mixer:
     def __init__(self, disp, width = 128, height = 64):
         self.disp = disp
         
-        self.buffer 20
+        self.timeSleep = 1.
+        
+        self.buffer = 20
         self.bar = 12
         self.gap = 4
         self.buffer = 5
+
+        self.dictVUs = {}
         
         self.V1 = .73
         self.V2 = .73
@@ -35,8 +41,12 @@ class Mixer:
         self.barh5 = int(self.yrng * self.V5)
         self.barh6 = int(self.yrng * self.V6)
         
+        buffer = self.buffer
+        bar = self.bar
+        gap = self.gap
+
         self.x_ = 0    
-        self.x0 = x_ + buffer        #
+        self.x0 = self.x_ + buffer        #
         self.x1 = self.x0+bar   #1
         self.x2 = self.x1+gap   #1
         self.x3 = self.x2+bar   #2
@@ -50,8 +60,24 @@ class Mixer:
         self.x11 = self.x10+bar #6
         self.x12 = self.x11+gap #6
 
+    def updateScreen(self):
+        self._update_barh()
+        self._update_rects()
+        self._write_levels()
+        time.sleep(self.timeSleep)
     
-    def a_update_rects(self):
+    
+    def _update_barh(self):
+        self.barh1 = int(self.yrng * self.V1)
+        self.barh2 = int(self.yrng * self.V2)
+        self.barh3 = int(self.yrng * self.V3)
+        self.barh4 = int(self.yrng * self.V4)
+        self.barh5 = int(self.yrng * self.V5)
+        self.barh6 = int(self.yrng * self.V6)
+    
+    def _update_rects(self):    
+        #                  [  a   ,    b   ,     c   ,     d     , e]
+        #
         self.dictVUs[1] = [self.x0, self.yb, self.bar, self.barh1, 1]
         self.dictVUs[2] = [self.x2, self.yb, self.bar, self.barh2, 1]
         self.dictVUs[3] = [self.x4, self.yb, self.bar, self.barh3, 1]
@@ -59,17 +85,26 @@ class Mixer:
         self.dictVUs[5] = [self.x8, self.yb, self.bar, self.barh5, 1]
         self.dictVUs[6] = [self.x10, self.yb, self.bar, self.barh6,1]
         
-    def a_write_levels(self):
+    def _write_level(self,channelNum):
         self.disp.fill(0)
         self.disp.show()
-        
+        a,b,c,d,e = self.dictVUs[channelNum]
+        self.disp.rect(a,self.ymax-b,c,d,e)
+        self.disp.show()
+    
+    def _write_levels(self):
+        self.disp.fill(0)
+        self.disp.show()
+       
         for VU in self.dictVUs:
         #  all channels VU bar
             a,b,c,d,e = self.dictVUs[VU]
-            self.disp.rect(a,self.ymax - self.yb,c,d,e)
+            print(VU,a,b,c,d,e)
+            yr = self.ymax - self.yb - d
+            self.disp.rect(a,yr,c,d,e)
         self.disp.show()
         
-    def a_write_clear(self):
+    def _write_clear(self):
         self.disp.fill(0)
         self.disp.show()
         #self.disp.

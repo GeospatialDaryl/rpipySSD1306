@@ -1,1 +1,2 @@
 >>> exec(open('/home/pi/devel/rpipySSD1306/start.py').read())
+>>> exec(open('/home/pi/devel/rpipySSD1306/bootStrap.py').read())
