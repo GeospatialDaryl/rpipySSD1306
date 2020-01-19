@@ -1,0 +1,3 @@
+[submodule "py-gaugette"]
+	path = py-gaugette
+	url = https://github.com/guyc/py-gaugette.git
