@@ -31,7 +31,7 @@ disp.show()
 
 mixr = classMixer_v1.Mixer(disp)
 mixr._update_rects()
-mixr._write_levels()
+mixr._write_screen()
 
 #  Config IO Wardware
 
@@ -55,6 +55,7 @@ while True:
     sw_state = switch.get_state()
     if sw_state != last_state:
         print ("switch %d" % sw_state)
+        mixr._set_SelectedBar()
         last_state = sw_state
 
 

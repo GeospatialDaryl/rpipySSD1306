@@ -26,6 +26,7 @@ while True:
 
     sw_state = switch.get_state()
     if sw_state != last_state:
+        mixr._set_SelectedBar():
         print ("switch %d" % sw_state)
         last_state = sw_state
 

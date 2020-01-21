@@ -6,6 +6,7 @@ def makeTrueY(inY, rect=128):
     else:
         return rect - inY 
 
+VERBOSE = True
 
 class Mixer:
     def __init__(self, disp, width = 128, height = 64):
@@ -15,13 +16,16 @@ class Mixer:
         self.timeSleep = 1.
         self.defaultAmpl = 0.73    
     
-        self.buffer = 20
         self.bar = 12
         self.gap = 4
         self.buffer = 5
 
         self.dictVUs = {}
         self.listVolVect = []
+        
+        # UI 
+        self.selBar_width = 4
+        self.selRect_x = 1
         
         self.V1 = self.defaultAmpl
         self.V2 = self.defaultAmpl
@@ -70,6 +74,9 @@ class Mixer:
         self.x10 = self.x9+gap  #5
         self.x11 = self.x10+bar #6
         self.x12 = self.x11+gap #6
+        
+        # graphic element indicators
+        self.selBar = None
 
     def __repr__(self):
         print(dir(self))
@@ -77,7 +84,7 @@ class Mixer:
     def updateScreen(self):
         self._update_barh()
         self._update_rects()
-        self._write_levels()
+        self._write_screen()
         time.sleep(self.timeSleep)
     
     def clearScreen(self):
@@ -107,13 +114,7 @@ class Mixer:
         
         if update:
             self.updateScreen()
-            
-    
-    #def a_init
 
-
-    
-    
     def _update_barh(self):
         self.barh1 = int(self.yrng * self.V1)
         self.barh2 = int(self.yrng * self.V2)
@@ -139,23 +140,39 @@ class Mixer:
         self.disp.rect(a,self.ymax-b,c,d,e)
         self.disp.show()
     
-    def _write_levels(self):
+    def _write_screen(self):
         self.disp.fill(0)
         self.disp.show()
        
+        # VUs
         for VU in self.dictVUs:
         #  all channels VU bar
             a,b,c,d,e = self.dictVUs[VU]
             print(VU,a,b,c,d,e)
             yr = self.ymax - self.yb - d
             self.disp.rect(a,yr,c,d,e)
+        # indicator    
+        self.disp.rect(self.selRect_x, self.ymax - self.yb, self.selBar_width, self.yb, 1)    
+            
+        
         self.disp.show()
         
     def _write_clear(self):
         self.disp.fill(0)
         self.disp.show()
-        #self.disp.
-    
-    
-        
+         
+    def _set_SelectedBar(self):
+        #increment
+        if self.selBar == None:
+            self.selBar = 1
+        elif self.selBar == 6:
+            self.selBar = 1
+        else:
+            self.selBar = self.selBar + 1        
+                               #  x of selBar    +   1/2 w of selBar        
+        if VERBOSE: print("selBar",self.selBar)
+        self.selRect_x = self.dictVUs[self.selBar][0] + int(0.5*self.dictVUs[self.selBar][1]) - int(0.5*self.selBar_width)     
+        self.disp.rect(self.selRect_x, self.ymax - self.yb, selBar_width, self.yb, 1)
+        self.disp.rect( 5, 61, 3, 3, 1)
+        self.disp.show()
 
